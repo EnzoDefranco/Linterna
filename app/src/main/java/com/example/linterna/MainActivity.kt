@@ -14,21 +14,23 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var cameraManager: CameraManager
     private lateinit var cameraId: String
+    private var isFlashOn: Boolean = false
     private lateinit var apagar: ImageView
     private lateinit var prendido: ImageView
-    private var isFlashOn: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Obtengo el servicio del administrador de la cámara
+        // Inicializar las vistas después de inflar el diseño de la actividad
+        apagar = findViewById<ImageView>(R.id.apagar)
+        prendido = findViewById<ImageView>(R.id.encender)
+
+        // Obtener el servicio del administrador de la cámara
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        var apagar = findViewById<ImageView>(R.id.apagar)
-        var prendido = findViewById<ImageView>(R.id.encender)
 
         try {
-            cameraId = cameraManager.cameraIdList[0] // Obtengo el ID de la cámara trasera
+            cameraId = cameraManager.cameraIdList[0] // Obtener el ID de la cámara trasera
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
@@ -36,15 +38,19 @@ class MainActivity : AppCompatActivity() {
         MostrarBoton()
 
 
-        // Configurar el botón y su evento de clic
 
-        apagar = findViewById<ImageView>(R.id.apagar)
-        apagar.setOnClickListener {
-            MostrarBoton()
+        prendido.setOnClickListener {
             toggleFlashlight()
+            MostrarBoton()
+        }
+
+
+        // Configurar el botón y su evento de clic
+        apagar.setOnClickListener {
+            toggleFlashlight()
+            MostrarBoton()
         }
     }
-
 
     fun MostrarBoton() {
         if (isFlashOn) {
@@ -56,9 +62,9 @@ class MainActivity : AppCompatActivity() {
             apagar.visibility=View.VISIBLE
         }
     }
-    //Método para alternar el estado del flash del dispositivo.
 
-    private fun toggleFlashlight() {
+    // Método para alternar el estado del flash del dispositivo.
+    fun toggleFlashlight() {
         try {
             cameraManager.setTorchMode(cameraId, !isFlashOn) // Cambia el estado del flash
             isFlashOn = !isFlashOn
