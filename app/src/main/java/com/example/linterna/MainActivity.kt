@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var cameraManager: CameraManager
     private lateinit var cameraId: String
-    private var isFlashOn: Boolean = false
+    private var flashPrendido: Boolean = false
     private lateinit var apagar: ImageView
     private lateinit var prendido: ImageView
 
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
 
         prendido.setOnClickListener {
-            toggleFlashlight()
+            alternarFlash()
             MostrarBoton()
             vibrar(this,500)
         }
@@ -51,14 +51,14 @@ class MainActivity : AppCompatActivity() {
 
         // Configurar el botón y su evento de clic
         apagar.setOnClickListener {
-            toggleFlashlight()
+            alternarFlash()
             MostrarBoton()
             vibrar(this,500)
         }
     }
 
     fun MostrarBoton() {
-        if (isFlashOn) {
+        if (flashPrendido) {
             prendido.visibility = View.VISIBLE
             apagar.visibility=View.GONE
         }
@@ -69,10 +69,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Método para alternar el estado del flash del dispositivo.
-    fun toggleFlashlight() {
+    fun alternarFlash() {
         try {
-            cameraManager.setTorchMode(cameraId, !isFlashOn) // Cambia el estado del flash
-            isFlashOn = !isFlashOn
+            cameraManager.setTorchMode(cameraId, !flashPrendido) // Cambia el estado del flash
+            flashPrendido = !flashPrendido
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
