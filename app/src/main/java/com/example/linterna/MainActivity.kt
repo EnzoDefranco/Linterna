@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.content.Context
 import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraManager
-
+import android.os.Build
 import android.view.View
-
 import android.widget.ImageView
+import android.os.VibrationEffect
+import android.os.Vibrator
+import androidx.annotation.RequiresApi
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private var isFlashOn: Boolean = false
     private lateinit var apagar: ImageView
     private lateinit var prendido: ImageView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         prendido.setOnClickListener {
             toggleFlashlight()
             MostrarBoton()
+            vibrar(this,500)
         }
 
 
@@ -49,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         apagar.setOnClickListener {
             toggleFlashlight()
             MostrarBoton()
+            vibrar(this,500)
         }
     }
 
@@ -70,6 +75,20 @@ class MainActivity : AppCompatActivity() {
             isFlashOn = !isFlashOn
         } catch (e: CameraAccessException) {
             e.printStackTrace()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun vibrar(context: Context, duracion: Long) {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        // Comprobar si la vibración es compatible
+        if (vibrator.hasVibrator()) {
+            // Obtener el patrón de vibración
+            val pattern = VibrationEffect.createOneShot(duracion, VibrationEffect.DEFAULT_AMPLITUDE)
+
+            // Vibrar con el patrón definido
+            vibrator.vibrate(pattern)
         }
     }
 }
